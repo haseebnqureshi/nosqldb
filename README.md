@@ -18,33 +18,36 @@ Super straightforward. Here are the few steps:
 3. Run your node app. That's it!
 
 ### API 
-With each new data collection, you get a series of helpers that easily get your data in and out from local storage.
+With each new data collection, you get a series of helpers that easily get your data in and out from local storage. So for clarity, if you ```var users = require('nosqldb')('users')```, these methods are called on your ```users``` object.
 
-#### all()
+#### .all()
 Takes no parameters, simply returns all rows in your collection.
 
-#### saveItem(item)
+#### .saveItem(item)
 Takes an item object, where keys and values are defined. This object will be appended to your collection.
 
-#### saveItems(item, item2, item3 ...)
+#### .saveItems(item, item2, item3 ...)
 Takes unlimited item objects as parameters, where each item's keys and values are defined. Each item is consecutively appended to your collection.
 
-#### makeEmpty()
+#### .create(item, item2, item3 ...) 
+Alias of saveItems.
+
+#### .makeEmpty()
 Takes no parameters, removes all rows and empties your collection.
 
-#### where(predicate)
+#### .where(predicate)
 Takes a predicate, where keys and values are defined. Only rows matching all keys and values in your predicate will be returned.
 
-#### findWhere(predicate)
+#### .findWhere(predicate)
 Takes a predicate, where keys and values are defined. Only the first row matching all keys and values in your predicate will be returned.
 
-#### deleteWhere(predicate)
+#### .deleteWhere(predicate)
 Takes a predicate, where keys and values are defined. Only rows matching all keys and values in your predicate will be removed from your collection.
 
-#### keepWhere(predicate)
+#### .keepWhere(predicate)
 Takes a predicate, where keys and values are defined. Only rows matching all keys and values in your predicate will be saved in your collection. All other rows will be removed from your collection.
 
-#### updateWhere(predicate, updatedValues)
+#### .updateWhere(predicate, updatedValues)
 Takes a predicate and updatedValues, where each has keys and values defined. Only rows matching all keys and values in your predicate will be updated in your collection.
 
 ### Primary Key

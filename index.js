@@ -167,6 +167,18 @@ module.exports = function(dataType) {
 
 	};
 
+	api.create = function() {
+
+		//batch appending items onto data
+		for (var i in arguments) {
+			var item = arguments[i];
+			item = util.ensureId(item);
+			util.data.rows.push(item);
+		}
+		util.writeRows();
+
+	};
+
 	api.makeEmpty = function() {
 
 		//completely removing all data in our dataType
