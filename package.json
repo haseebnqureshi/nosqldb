@@ -1,15 +1,26 @@
 {
-  "name": "hq-json-database",
-  "version": "1.0.0",
-  "description": "",
+  "name": "nosqldb",
+  "version": "0.1.0",
+  "description": "Beautifully straight forward NoSQL JSON document DB.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "underscore": "^1.8.3"
   },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haseebnqureshi/nosqldb.git"
+  },
+  "keywords": [
+    "nosql",
+    "json",
+    "db"
+  ],
   "author": "Haseeb Qureshi",
   "license": "MIT",
-  "dependencies": {
-    "underscore": "^1.8.3",
-    "uuid": "^3.0.1"
-  }
+  "bugs": {
+    "url": "https://github.com/haseebnqureshi/nosqldb/issues"
+  },
+  "homepage": "https://github.com/haseebnqureshi/nosqldb#readme"
 }
