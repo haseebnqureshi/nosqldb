@@ -189,7 +189,7 @@ module.exports = function(dataType) {
 
 	api.where = function(predicate) {
 
-		//returns all matching items to properties or predicate
+		//returns all matching items to predicate
 		try {
 			return _.filter(util.data.rows, predicate);	
 		}
@@ -201,7 +201,7 @@ module.exports = function(dataType) {
 
 	api.findWhere = function(predicate) {
 
-		//returns one item matching our properties or predicate
+		//returns one item matching our predicate
 		try {
 			var items = _.filter(util.data.rows, predicate);
 			return items[0];
@@ -214,7 +214,7 @@ module.exports = function(dataType) {
 
 	api.deleteWhere = function(predicate) {
 
-		//removes all items matching our properties or predicate
+		//removes all items matching our predicate
 		try {
 
 			//first find our rows to delete
@@ -232,7 +232,7 @@ module.exports = function(dataType) {
 
 	api.keepWhere = function(predicate) {
 
-		//keeps all items matching our properties or predicate
+		//keeps all items matching our predicate
 		try {
 			util.data.rows = _.filter(util.data.rows, predicate);
 			util.writeRows();
@@ -245,9 +245,9 @@ module.exports = function(dataType) {
 
 	api.updateWhere = function(predicate, updatedValues) {
 
-		//update any row where its properties match
+		//update any row where its predicate match
 		util.data.rows = _.map(util.data.rows, function(row) {
-			if (_.findWhere([row], properties || {})) {
+			if (_.findWhere([row], predicate || {})) {
 				row = _.extend(row, updatedValues);
 			}
 			return row;
