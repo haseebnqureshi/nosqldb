@@ -5,6 +5,11 @@ var path = require('path');
 var _ = require('underscore');
 var crypto = require('crypto');
 
+
+//important: resolving our data directory from the start
+var pwd = process.env.PWD || '';
+var datapath = path.resolve(pwd !== '' ? pwd : __dirname, 'data');
+
 //construct our logic, to handle multiple instances
 module.exports = function(dataType) {
 
@@ -13,7 +18,7 @@ module.exports = function(dataType) {
 
 	util.data = {
 		contents: '',
-		dir: path.resolve(__dirname, 'data'),
+		dir: datapath,
 		filename: 'rows.json',
 		type: '',
 		rows: []
@@ -109,12 +114,11 @@ module.exports = function(dataType) {
 	util.init = function() {
 
 		//ensure we have our data directory
-		var pwd = process.env.PWD || '';
-		var filepath = path.resolve(pwd !== '' ? pwd : __dirname, 'data');
-		var stat = fs.statSync(filepath);
-
-		if (!stat.isDirectory()) {
-			fs.mkdirSync(filepath);
+		try {
+			var stat = fs.statSync(datapath);
+		}
+		catch(err) {
+			fs.mkdirSync(datapath);
 		}
 
 		//making sure we can error-free load and read dataType data
