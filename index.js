@@ -20,6 +20,7 @@ module.exports = function(dataType) {
 		contents: '',
 		dir: datapath,
 		filename: 'rows.json',
+		filepath: '',
 		type: '',
 		rows: []
 	};
@@ -77,6 +78,20 @@ module.exports = function(dataType) {
 		return this;
 	};
 
+	util.readRows = function() {
+		try {
+			util.data.contents = fs.readFileSync(util.data.filepath, 'utf8');
+			var data = JSON.parse(util.data.contents);
+			util.data.rows = data.rows;
+		}
+		catch(err) { 
+			util.data.rows = [];
+			util.data.contents = JSON.stringify({ rows: util.data.rows });
+			fs.mkdirSync(path.dirname(util.data.filepath));
+			fs.writeFileSync(util.data.filepath, util.data.contents, 'utf8');
+		}
+	};
+
 	util.hash = function(str, secret) {
 		return crypto.createHmac('sha256', secret || 'nosqldb')
 			.update(str)
@@ -124,29 +139,25 @@ module.exports = function(dataType) {
 		//making sure we can error-free load and read dataType data
 		util.reset();
 		util.data.type = util.safeStr(dataType);
-		var filepath = path.resolve(util.data.dir, util.data.type, util.data.filename);
-		try {
-			util.data.contents = fs.readFileSync(filepath, 'utf8');
-			var data = JSON.parse(util.data.contents);
-			util.data.rows = data.rows;
-		}
-		catch(err) { 
-			util.data.rows = [];
-			util.data.contents = JSON.stringify({ rows: util.data.rows });
-			fs.mkdirSync(path.dirname(filepath));
-			fs.writeFileSync(filepath, util.data.contents, 'utf8');
-		}
+		util.data.filepath = path.resolve(util.data.dir, util.data.type, util.data.filename);
 
 	};
 
 	api.all = function() {
 		
+		//ensuring we freshly load our rows
+		util.readRows();
+
 		//returning rows for dataType
 		return util.data.rows;
 
 	};
 
 	api.saveItem = function(item) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
+
 		item = util.ensureId(item);
 
 		//simply appending item to data
@@ -156,6 +167,9 @@ module.exports = function(dataType) {
 	};
 
 	api.saveItems = function() {
+
+		//ensuring we freshly load our rows
+		util.readRows();
 
 		//batch appending items onto data
 		for (var i in arguments) {
@@ -167,7 +181,11 @@ module.exports = function(dataType) {
 
 	};
 
+	//alias of saveItems
 	api.create = function() {
+
+		//ensuring we freshly load our rows
+		util.readRows();
 
 		//batch appending items onto data
 		for (var i in arguments) {
@@ -189,6 +207,9 @@ module.exports = function(dataType) {
 
 	api.where = function(predicate) {
 
+		//ensuring we freshly load our rows
+		util.readRows();
+
 		//returns all matching items to predicate
 		try {
 			return _.filter(util.data.rows, predicate);	
@@ -200,6 +221,9 @@ module.exports = function(dataType) {
 	};
 
 	api.findWhere = function(predicate) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
 
 		//returns one item matching our predicate
 		try {
@@ -213,6 +237,31 @@ module.exports = function(dataType) {
 	}
 
 	api.deleteWhere = function(predicate) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
+
+		//removes all items matching our predicate
+		try {
+
+			//first find our rows to delete
+			var rowsToDelete = _.filter(util.data.rows, predicate);	
+		
+			//then reconcile our rows and write what's remaining
+			util.data.rows = _.difference(util.data.rows, rowsToDelete);
+			util.writeRows();
+		}
+		catch(err) {
+
+		}
+
+	};
+
+	//alis of deleteWhere
+	api.delete = function(predicate) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
 
 		//removes all items matching our predicate
 		try {
@@ -232,6 +281,26 @@ module.exports = function(dataType) {
 
 	api.keepWhere = function(predicate) {
 
+		//ensuring we freshly load our rows
+		util.readRows();
+
+		//keeps all items matching our predicate
+		try {
+			util.data.rows = _.filter(util.data.rows, predicate);
+			util.writeRows();
+		}
+		catch(err) {
+
+		}
+
+	};
+
+	//alias of keepWhere
+	api.keep = function(predicate) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
+
 		//keeps all items matching our predicate
 		try {
 			util.data.rows = _.filter(util.data.rows, predicate);
@@ -244,6 +313,26 @@ module.exports = function(dataType) {
 	};
 
 	api.updateWhere = function(predicate, updatedValues) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
+
+		//update any row where its predicate match
+		util.data.rows = _.map(util.data.rows, function(row) {
+			if (_.findWhere([row], predicate || {})) {
+				row = _.extend(row, updatedValues);
+			}
+			return row;
+		});
+		util.writeRows();
+
+	};
+
+	//alias of updateWhere
+	api.update = function(predicate, updatedValues) {
+
+		//ensuring we freshly load our rows
+		util.readRows();
 
 		//update any row where its predicate match
 		util.data.rows = _.map(util.data.rows, function(row) {

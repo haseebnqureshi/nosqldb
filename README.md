@@ -44,11 +44,20 @@ Takes a predicate, where keys and values are defined. Only the first row matchin
 #### .deleteWhere(predicate)
 Takes a predicate, where keys and values are defined. Only rows matching all keys and values in your predicate will be removed from your collection.
 
+#### .delete(predicate)
+Alias of deleteWhere.
+
 #### .keepWhere(predicate)
 Takes a predicate, where keys and values are defined. Only rows matching all keys and values in your predicate will be saved in your collection. All other rows will be removed from your collection.
 
+#### .keep(predicate)
+Alias of keepWhere.
+
 #### .updateWhere(predicate, updatedValues)
 Takes a predicate and updatedValues, where each has keys and values defined. Only rows matching all keys and values in your predicate will be updated in your collection.
+
+#### .update(predicate, updatedValues)
+Alias of updateWhere.
 
 ### Primary Key
 By default, the primary key is simply ```id``` and NoSQL DB auto-generates that identifier for each row (or JSON document). Alternatively, you have the option of overriding the auto-generated identifier. Simply pass your own value for the ```id``` parameter in any document save or update method.
