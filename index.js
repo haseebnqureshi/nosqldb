@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var crypto = require('crypto');
+var exec = require('child_process').execSync;
 
 
 //important: resolving our data directory from the start
@@ -51,7 +52,8 @@ module.exports = function(dataType) {
 		/* start write */
 		var filedir = path.resolve(util.data.dir, util.data.type, `writing-${util.timestamp()}`);
 		var filepath = path.resolve(filedir, util.data.filename);
-		fs.mkdirSync(filedir);
+
+		exec(`mkdir -p ${filedir}`);
 		fs.writeFileSync(filepath, util.data.contents, 'utf8');
 
 		/* finish write */
@@ -87,7 +89,7 @@ module.exports = function(dataType) {
 		catch(err) { 
 			util.data.rows = [];
 			util.data.contents = JSON.stringify({ rows: util.data.rows });
-			fs.mkdirSync(path.dirname(util.data.filepath));
+			exec(`mkdir -p ${path.dirname(util.data.filepath)}`);
 			fs.writeFileSync(util.data.filepath, util.data.contents, 'utf8');
 		}
 	};
@@ -133,7 +135,7 @@ module.exports = function(dataType) {
 			var stat = fs.statSync(datapath);
 		}
 		catch(err) {
-			fs.mkdirSync(datapath);
+			exec(`mkdir -p ${datapath}`);
 		}
 
 		//making sure we can error-free load and read dataType data
