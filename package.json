@@ -1,6 +1,6 @@
 {
   "name": "nosqldb",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Beautifully straight forward NoSQL JSON document DB.",
   "main": "index.js",
   "dependencies": {

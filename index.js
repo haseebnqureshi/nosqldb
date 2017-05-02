@@ -12,10 +12,12 @@ var pwd = process.env.PWD || '';
 var datapath = path.resolve(pwd !== '' ? pwd : __dirname, 'data');
 
 //construct our logic, to handle multiple instances
-module.exports = function(dataType) {
+module.exports = function(dataType, options) {
 
 	var util = {};
 	var api = {};
+	var options = options || {};
+	var primaryKey = options.primaryKey || 'id';
 
 	util.data = {
 		contents: '',
@@ -72,7 +74,7 @@ module.exports = function(dataType) {
 
 		//ensuring our rows are unique by id
 		util.data.rows = _.uniq(util.data.rows, function(row) {
-			return row.id;
+			return row[primaryKey];
 		});
 
 		util.data.contents = JSON.stringify({ rows: util.data.rows });
@@ -114,16 +116,16 @@ module.exports = function(dataType) {
 		//parameter. and if we don't have any id parameter, we 
 		//generate a hash based on our entire item.
 
-		if (item.id) {
-			if (item.id === 'nonunique') {
-				item.id = util.newHash()
+		if (item[primaryKey]) {
+			if (item[primaryKey] === 'nonunique') {
+				item[primaryKey] = util.newHash()
 				return item;
 			}
 			return item;
 		}
 		else {
 			var str = JSON.stringify(item);
-			item.id = util.hash(str);
+			item[primaryKey] = util.hash(str);
 			return item;
 		}
 	};

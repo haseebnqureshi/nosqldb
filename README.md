@@ -17,6 +17,9 @@ Super straightforward. Here are the few steps:
 2. Create any new data collection with ```var users = require('nosqldb')('users')```
 3. Run your node app. That's it!
 
+### Specifying Primary Key
+Instead of using the default ```id``` primary key, you can pass any string to define your primary key. So if you wanted your ```users``` object to have a primary key of ```user_id```, simply ```var users = require('nosqldb')('users', { primaryKey: 'user_id' })```.
+
 ### API 
 With each new data collection, you get a series of helpers that easily get your data in and out from local storage. So for clarity, if you ```var users = require('nosqldb')('users')```, these methods are called on your ```users``` object.
 
